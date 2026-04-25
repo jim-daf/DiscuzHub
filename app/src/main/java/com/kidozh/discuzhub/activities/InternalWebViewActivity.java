@@ -47,8 +47,19 @@ public class InternalWebViewActivity extends BaseStatusActivity {
 
         getIntentInfo();
         configureActionBar();
-        configureWebview();
+        configureWebview(savedInstanceState);
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Issue #47: persist the WebView so rotation does not throw
+        // away navigation history and dump the user back at the URL
+        // they entered the activity with.
+        if (binding != null) {
+            binding.webview.saveState(outState);
+        }
     }
 
     private void getIntentInfo(){
