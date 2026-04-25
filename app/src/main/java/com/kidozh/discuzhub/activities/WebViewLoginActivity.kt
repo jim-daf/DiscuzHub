@@ -50,19 +50,9 @@ class WebViewLoginActivity : BaseStatusActivity() {
             layoutInflater
         )
         setContentView(binding!!.root)
-        configureIntentData(savedInstanceState)
+        configureIntentData()
         configureActionBar()
-        if (savedInstanceState == null) {
-            configureAlertDialog()
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        // Issue #46: persist the login WebView so device rotation does
-        // not drop the user back at the initial login page after they
-        // have already navigated several screens deep.
-        binding?.loginByWebWebview?.saveState(outState)
+        configureAlertDialog()
     }
 
     fun configureAlertDialog() {
@@ -73,18 +63,18 @@ class WebViewLoginActivity : BaseStatusActivity() {
             .show()
     }
 
-    fun configureIntentData() {
+    fun configureIntentData(savedInstanceState: Bundle? = null) {
         val intent = intent
         discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
         if (discuz != null) {
             URLUtils.setBBS(discuz)
-            configureWebView()
+            configureWebView(savedInstanceState)
         } else {
             // judge whether from QQ
             if (Intent.ACTION_VIEW == intent.action && intent.data != null) {
                 val url = intent.data.toString()
                 Log.d(TAG, "Get QQ Login URL $url")
-                configureQQLoginWebview(url)
+                configureQQLoginWebview(url, savedInstanceState)
             }
         }
     }
