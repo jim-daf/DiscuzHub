@@ -50,9 +50,19 @@ class WebViewLoginActivity : BaseStatusActivity() {
             layoutInflater
         )
         setContentView(binding!!.root)
-        configureIntentData()
+        configureIntentData(savedInstanceState)
         configureActionBar()
-        configureAlertDialog()
+        if (savedInstanceState == null) {
+            configureAlertDialog()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Issue #46: persist the login WebView so device rotation does
+        // not drop the user back at the initial login page after they
+        // have already navigated several screens deep.
+        binding?.loginByWebWebview?.saveState(outState)
     }
 
     fun configureAlertDialog() {
