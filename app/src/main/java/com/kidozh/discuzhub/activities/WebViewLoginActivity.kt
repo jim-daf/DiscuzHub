@@ -91,22 +91,15 @@ class WebViewLoginActivity : BaseStatusActivity() {
         }
     }
 
-    fun configureWebView(savedInstanceState: Bundle? = null) {
+    fun configureWebView() {
         cookieWebViewClientInstance = CookieWebViewClient()
         Log.d(
             TAG, "login web url " + URLUtils.getLoginWebURL(
                 discuz!!
             )
         )
-        if (savedInstanceState != null) {
-            // Issue #46: rotation used to throw away the user's
-            // navigation history. Restore the saved WebView snapshot
-            // instead of reloading the initial login URL.
-            binding!!.loginByWebWebview.restoreState(savedInstanceState)
-        } else {
-            binding!!.loginByWebWebview.loadUrl(URLUtils.getLoginWebURL(discuz!!))
-            binding!!.loginByWebWebview.clearCache(true)
-        }
+        binding!!.loginByWebWebview.loadUrl(URLUtils.getLoginWebURL(discuz!!))
+        binding!!.loginByWebWebview.clearCache(true)
         val webSettings = binding!!.loginByWebWebview.settings
 
         // to allow authentication to use JS
@@ -126,10 +119,14 @@ class WebViewLoginActivity : BaseStatusActivity() {
         binding!!.loginByWebWebview.webViewClient = cookieWebViewClientInstance!!
     }
 
-    fun configureQQLoginWebview(url: String) {
+    fun configureQQLoginWebview(url: String, savedInstanceState: Bundle? = null) {
         cookieWebViewClientInstance = CookieWebViewClient()
         Log.d(TAG, "login qq url $url")
-        binding!!.loginByWebWebview.loadUrl(url)
+        if (savedInstanceState != null) {
+            binding!!.loginByWebWebview.restoreState(savedInstanceState)
+        } else {
+            binding!!.loginByWebWebview.loadUrl(url)
+        }
 
 
         // binding.loginByWebWebview.clearCache(true);
