@@ -68,7 +68,7 @@ public class InternalWebViewActivity extends BaseStatusActivity {
 
     }
 
-    void configureWebview(Bundle savedInstanceState){
+    void configureWebview(){
         WebSettings webSettings = binding.webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setUseWideViewPort(true);
@@ -96,8 +96,13 @@ public class InternalWebViewActivity extends BaseStatusActivity {
 
         binding.webview.setWebViewClient(cookieClient);
 
-        binding.webview.loadUrl(startURL);
-
+        if (savedInstanceState != null) {
+            // Issue #47: restore the saved WebView state on rotation
+            // instead of force-reloading the original URL.
+            binding.webview.restoreState(savedInstanceState);
+        } else {
+            binding.webview.loadUrl(startURL);
+        }
 
 
     }
